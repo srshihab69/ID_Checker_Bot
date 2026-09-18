@@ -26,43 +26,39 @@ const PREMIUM_EMOJIS = {
     gift: '5386783304454258561',
     support: '6217489739675604129',
     check: '593354413740403607',
-    extra: '6188364681678163125'
+    star: '6188364681678163125'
 };
 
 
 // ======================================================
-// CUSTOM EMOJI MESSAGE FUNCTION
+// PREMIUM EMOJI WELCOME FUNCTION
+// NO NORMAL EMOJI IN PREMIUM EMOJI POSITIONS
 // ======================================================
 
 function createPremiumWelcome(name) {
 
-    /*
-     * IMPORTANT:
-     * Telegram custom emoji entities use UTF-16 offsets.
-     * JavaScript string.length is also UTF-16 based,
-     * so it can safely be used for Telegram offsets.
-     */
-
     let text = '';
     const entities = [];
 
-    function addText(value) {
+    // Invisible Unicode character
+    const invisible = '\u2063';
+
+    function add(value) {
         text += value;
     }
 
-    function addCustomEmoji(fallbackEmoji, customEmojiId) {
+    function premiumEmoji(id) {
 
         const offset = text.length;
 
-        // Fallback emoji
-        text += fallbackEmoji;
+        // Invisible placeholder
+        text += invisible;
 
-        // Replace fallback emoji visually with Premium Emoji
         entities.push({
             type: 'custom_emoji',
             offset: offset,
-            length: fallbackEmoji.length,
-            custom_emoji_id: customEmojiId
+            length: 1,
+            custom_emoji_id: id
         });
     }
 
@@ -71,55 +67,57 @@ function createPremiumWelcome(name) {
     // Welcome
     // --------------------------------------------------
 
-    addText('❤️ Welcome, ');
-    addText(name);
-    addText('\n\n');
+    add('Welcome, ');
+    add(name);
+    add('\n\n');
 
 
     // --------------------------------------------------
-    // Store title
+    // Dragonor Army STORE
     // --------------------------------------------------
 
-    addCustomEmoji('⭐', PREMIUM_EMOJIS.extra);
-    addText(' — Dragonor Army STORE — ');
-    addCustomEmoji('⭐', PREMIUM_EMOJIS.extra);
+    premiumEmoji(PREMIUM_EMOJIS.star);
 
-    addText('\n\n');
+    add(' — Dragonor Army STORE — ');
+
+    premiumEmoji(PREMIUM_EMOJIS.star);
+
+    add('\n\n');
 
 
     // --------------------------------------------------
     // Premium Features
     // --------------------------------------------------
 
-    addCustomEmoji('🔑', PREMIUM_EMOJIS.key);
-    addText(' Premium All Best Mod Keys\n');
+    premiumEmoji(PREMIUM_EMOJIS.key);
+    add(' Premium All Best Mod Keys\n');
 
-    addCustomEmoji('⚡', PREMIUM_EMOJIS.lightning);
-    addText(' Instant Delivery 24/7\n');
+    premiumEmoji(PREMIUM_EMOJIS.lightning);
+    add(' Instant Delivery 24/7\n');
 
-    addCustomEmoji('🔒', PREMIUM_EMOJIS.lock);
-    addText(' 100% Secure Payment\n');
+    premiumEmoji(PREMIUM_EMOJIS.lock);
+    add(' 100% Secure Payment\n');
 
-    addCustomEmoji('💰', PREMIUM_EMOJIS.discount);
-    addText(' Best Prices Guaranteed\n');
+    premiumEmoji(PREMIUM_EMOJIS.discount);
+    add(' Best Prices Guaranteed\n');
 
-    addCustomEmoji('🎁', PREMIUM_EMOJIS.gift);
-    addText(' High Discount Rewards\n');
+    premiumEmoji(PREMIUM_EMOJIS.gift);
+    add(' High Discount Rewards\n');
 
-    addCustomEmoji('⏰', PREMIUM_EMOJIS.support);
-    addText(' Active Support For Set-Up\n');
+    premiumEmoji(PREMIUM_EMOJIS.support);
+    add(' Active Support For Set-Up\n');
 
 
     // --------------------------------------------------
-    // Bottom line
+    // Bottom
     // --------------------------------------------------
 
-    addText('\n\n');
-    addText('━━━━━━━━━━━━━━━━━━━━');
-    addText('\n\n');
+    add('\n\n');
+    add('━━━━━━━━━━━━━━━━━━━━');
+    add('\n\n');
 
-    addCustomEmoji('✅', PREMIUM_EMOJIS.check);
-    addText(' Tap Shop Now to Start!');
+    premiumEmoji(PREMIUM_EMOJIS.check);
+    add(' Tap Shop Now to Start!');
 
 
     return {
@@ -183,7 +181,6 @@ app.post('/api/webhook', async (req, res) => {
                 msg.from.username ||
                 'User';
 
-            // Create Premium Emoji message
             const welcome = createPremiumWelcome(name);
 
             await bot.sendMessage(
@@ -256,7 +253,6 @@ app.post('/api/webhook', async (req, res) => {
                     `</blockquote>`;
             }
 
-
             await bot.sendMessage(
                 chatId,
                 header + details,
@@ -295,7 +291,6 @@ app.post('/api/webhook', async (req, res) => {
                 }` +
                 `</blockquote>`;
 
-
             await bot.sendMessage(
                 chatId,
                 header + details,
@@ -332,7 +327,6 @@ app.post('/api/webhook', async (req, res) => {
                     ]
                 ]
             };
-
 
             await bot.sendMessage(
                 chatId,
