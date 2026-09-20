@@ -1,8 +1,12 @@
 {
-  "name": "telegram-bot",
+  "name": "tg-id-checker-premium",
   "version": "1.0.0",
-  "main": "api/index.js",
+  "main": "index.js",
   "dependencies": {
-    "telegraf": "^4.16.3"
+    "axios": "^1.7.9",
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "form-data": "^4.0.1",
+    "node-telegram-bot-api": "^0.61.0"
   }
 }
